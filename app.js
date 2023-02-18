@@ -1,4 +1,5 @@
 const express = require('express');
+const {v4: uuidv4} = require('uuid'); 
 
 const app = express();
 let port = 3000;
@@ -10,6 +11,9 @@ let students = [
     {id: 3, name:"Adithya", major: "Physics"}
 ];
 
+app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}));
+
 // The below middleware will be used by all the incoming requests because we are not specifying any path
 app.use((req, res, next) => {
     console.log(req.method);
@@ -17,10 +21,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res, next) => {
-    console.log("This is the 2nd middleware");
-    next();
-});
 
 app.get('/', (req, res) => {
     // res.statusCode = 200;
@@ -37,6 +37,18 @@ app.get('/', (req, res) => {
 
 app.get('/students', (req, res) => {
     res.json(students);
+});
+
+app.post('/students', (req, res) => {
+    console.log(req.body);
+    let student = req.body;
+    student.id = uuidv4();
+    students.push(student);
+    res.redirect('/students');
+});
+
+app.get('/students/create', (req, res) => {
+    res.sendFile('./views/new.html', {root: __dirname});
 });
 
 // Send student with particular id back to the client

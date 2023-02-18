@@ -4,7 +4,23 @@ const app = express();
 let port = 3000;
 let host = 'localhost';
 
-let students = [{id: 1, name: "Nikhil"}, {id: 2, name: "Nithin"}, {id: 3, name:"Adithya"}];
+let students = [
+    {id: 1, name: "Nikhil", major: "Computer Science"}, 
+    {id: 2, name: "Nithin", major: "Biology"}, 
+    {id: 3, name:"Adithya", major: "Physics"}
+];
+
+// The below middleware will be used by all the incoming requests because we are not specifying any path
+app.use((req, res, next) => {
+    console.log(req.method);
+    console.log(req.url);
+    next();
+});
+
+app.use((req, res, next) => {
+    console.log("This is the 2nd middleware");
+    next();
+});
 
 app.get('/', (req, res) => {
     // res.statusCode = 200;
@@ -17,6 +33,10 @@ app.get('/', (req, res) => {
     console.log(req.query);
 
     res.sendFile('./views/index.html',{root: __dirname});
+});
+
+app.get('/students', (req, res) => {
+    res.json(students);
 });
 
 // Send student with particular id back to the client
@@ -41,6 +61,11 @@ app.get('/about', (req, res) => {
 
 app.get('/contact', (req, res) => {
     res.send('Contact Page');
+});
+
+// For 404 page
+app.use((req, res, next) => {
+    res.status(400).send('Page cannot be found');
 });
 
 app.listen(port, host, () => {

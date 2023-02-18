@@ -1,5 +1,6 @@
 const express = require('express');
 const {v4: uuidv4} = require('uuid'); 
+const morgan = require('morgan');
 
 const app = express();
 let port = 3000;
@@ -15,11 +16,13 @@ app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 
 // The below middleware will be used by all the incoming requests because we are not specifying any path
-app.use((req, res, next) => {
-    console.log(req.method);
-    console.log(req.url);
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log(req.method);
+//     console.log(req.url);
+//     next();
+// });
+// Instead of above middleware we have morgan middleware
+app.use(morgan('tiny'));
 
 
 app.get('/', (req, res) => {

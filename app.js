@@ -1,15 +1,18 @@
 const express = require('express');
 const {v4: uuidv4} = require('uuid'); 
 const morgan = require('morgan');
+const ejs = require('ejs');
 
 const app = express();
 let port = 3000;
 let host = 'localhost';
 
+app.set('view engine', 'ejs'); 
+
 let students = [
-    {id: 1, name: "Nikhil", major: "Computer Science"}, 
-    {id: 2, name: "Nithin", major: "Biology"}, 
-    {id: 3, name:"Adithya", major: "Physics"}
+    {id: '1', name: "Nikhil", major: "Computer Science", gpa: 4}, 
+    {id: '2', name: "Nithin", major: "Biology", gpa: 3.86}, 
+    {id: '3', name:"Adithya", major: "Physics", gpa: 3.5}
 ];
 
 app.use(express.static('public'));
@@ -58,9 +61,9 @@ app.get('/students/create', (req, res) => {
 app.get('/students/:sid', (req, res) => {
     console.log(req.params);
     let sid = req.params.sid;
-    let student = students.find(element => element.id == parseInt(sid));
+    let student = students.find(element => element.id == sid);
     console.log(student);
-    res.json(student);
+    res.render('student', {student:student});
     // sends empty body when student object is undefined
 });
 
